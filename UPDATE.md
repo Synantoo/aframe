@@ -32,6 +32,10 @@ and in constructor below setDRACOLoader, add:
 
     this[$loader].setMeshoptDecoder(MeshoptDecoder);
 
+This change will not be needed in a more recent version of model-viewer.
+There is some custom changes for AvatarSDK, see this commit in the meshopt
+branch: https://github.com/Synantoo/model-viewer/commit/d65347405ba1a154499c8d405bb2f06d0afa1f76
+
 build it:
 
     cd packages/model-viewer
