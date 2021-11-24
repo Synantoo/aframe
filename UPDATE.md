@@ -9,8 +9,8 @@ at the time of the last build
 How to build:
 
     npm run dist
-    cp dist/aframe-master.js ../synantoo-frontend/public/dist/aframe-master-6ce36f8.min.js
-    cp dist/aframe-master.js.map ../synantoo-frontend/public/dist/aframe-master-6ce36f8.min.js.map
+    cp dist/aframe-master.min.js ../synantoo-frontend/public/dist/aframe-master-6ce36f8.min.js
+    cp dist/aframe-master.min.js.map ../synantoo-frontend/public/dist/aframe-master-6ce36f8.min.js.map
     sed -i 's@aframe-master.min.js.map@aframe-master-6ce36f8.min.js.map@' ../synantoo-frontend/public/dist/aframe-master-6ce36f8.min.js
 
 
