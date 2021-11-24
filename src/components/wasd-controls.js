@@ -9,6 +9,7 @@ var shouldCaptureKeyEvent = utils.shouldCaptureKeyEvent;
 var CLAMP_VELOCITY = 0.00001;
 var MAX_DELTA = 0.2;
 var KEYS = [
+  'KeyQ', 'KeyE', 'PageUp', 'PageDown',
   'KeyW', 'KeyA', 'KeyS', 'KeyD',
   'ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'
 ];
@@ -26,7 +27,10 @@ module.exports.Component = registerComponent('wasd-controls', {
     fly: {default: false},
     wsAxis: {default: 'z', oneOf: ['x', 'y', 'z']},
     wsEnabled: {default: true},
-    wsInverted: {default: false}
+    wsInverted: {default: false},
+    qeAxis: {default: 'y', oneOf: ['x', 'y', 'z']},
+    qeEnabled: {default: true},
+    qeInverted: {default: false}
   },
 
   init: function () {
@@ -51,14 +55,14 @@ module.exports.Component = registerComponent('wasd-controls', {
     var el = this.el;
     var velocity = this.velocity;
 
-    if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
+    if (!velocity[data.adAxis] && !velocity[data.wsAxis] && !velocity[data.qeAxis] &&
         isEmptyObject(this.keys)) { return; }
 
     // Update velocity.
     delta = delta / 1000;
     this.updateVelocity(delta);
 
-    if (!velocity[data.adAxis] && !velocity[data.wsAxis]) { return; }
+    if (!velocity[data.adAxis] && !velocity[data.wsAxis] && !velocity[data.qeAxis]) { return; }
 
     // Get movement vector and translate position.
     el.object3D.position.add(this.getMovementVector(delta));
@@ -90,11 +94,13 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     adAxis = data.adAxis;
     wsAxis = data.wsAxis;
+    qeAxis = data.qeAxis;
 
     // If FPS too low, reset velocity.
     if (delta > MAX_DELTA) {
       velocity[adAxis] = 0;
       velocity[wsAxis] = 0;
+      velocity[qeAxis] = 0;
       return;
     }
 
@@ -107,10 +113,14 @@ module.exports.Component = registerComponent('wasd-controls', {
     if (velocity[wsAxis] !== 0) {
       velocity[wsAxis] = velocity[wsAxis] * scaledEasing;
     }
+    if (velocity[qeAxis] !== 0) {
+      velocity[qeAxis] = velocity[qeAxis] * scaledEasing;
+    }
 
     // Clamp velocity easing.
     if (Math.abs(velocity[adAxis]) < CLAMP_VELOCITY) { velocity[adAxis] = 0; }
     if (Math.abs(velocity[wsAxis]) < CLAMP_VELOCITY) { velocity[wsAxis] = 0; }
+    if (Math.abs(velocity[qeAxis]) < CLAMP_VELOCITY) { velocity[qeAxis] = 0; }
 
     if (!data.enabled) { return; }
 
@@ -125,6 +135,11 @@ module.exports.Component = registerComponent('wasd-controls', {
       wsSign = data.wsInverted ? -1 : 1;
       if (keys.KeyW || keys.ArrowUp) { velocity[wsAxis] -= wsSign * acceleration * delta; }
       if (keys.KeyS || keys.ArrowDown) { velocity[wsAxis] += wsSign * acceleration * delta; }
+    }
+    if (data.qeEnabled) {
+      qeSign = data.qeInverted ? -1 : 1;
+      if (keys.KeyE || keys.PageDown) { velocity[qeAxis] -= qeSign * acceleration * delta; }
+      if (keys.KeyQ || keys.PageUp) { velocity[qeAxis] += qeSign * acceleration * delta; }
     }
   },
 
